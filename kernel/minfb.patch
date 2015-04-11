@@ -1,0 +1,16 @@
+--- a/drivers/video/tegra/fb.c	2015-02-26 18:44:50.837389411 -0600
++++ b/drivers/video/tegra/fb.c	2015-03-06 09:28:28.681182370 -0600
+@@ -324,10 +324,13 @@ static int tegra_fb_pan_display(struct f
+ 	/*
+ 	 * Do nothing if display parameters are same as current values.
+ 	 */
++
++#ifdef CONFIG_ANDROID
+ 	if (!(var->activate & FB_ACTIVATE_FORCE) &&
+ 	    (var->xoffset == tegra_fb->curr_xoffset) &&
+ 	    (var->yoffset == tegra_fb->curr_yoffset))
+ 		return 0;
++#endif
+ 
+ 	if (!tegra_fb->win->cur_handle) {
+ 		flush_start = info->screen_base + (var->yoffset * info->fix.line_length);

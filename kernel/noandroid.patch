@@ -1,0 +1,56 @@
+diff -rupN a/arch/arm/mach-tegra/board-tegratab.c b/arch/arm/mach-tegra/board-tegratab.c
+--- a/arch/arm/mach-tegra/board-tegratab.c	2015-01-27 18:42:32.000000000 -0600
++++ b/arch/arm/mach-tegra/board-tegratab.c	2015-02-07 21:03:11.006117428 -0600
+@@ -700,8 +700,10 @@ static int __init tegratab_touch_init(vo
+ {
+ 	struct board_info board_info;
+ 
++#ifdef CONFIG_ANDROID
+ 	if (get_androidboot_mode_charger())
+ 		return 0;
++#endif
+ 
+ 	tegra_get_board_info(&board_info);
+ 
+diff -rupN a/arch/arm/mach-tegra/board-tegratab-power.c b/arch/arm/mach-tegra/board-tegratab-power.c
+--- a/arch/arm/mach-tegra/board-tegratab-power.c	2015-01-27 18:42:32.000000000 -0600
++++ b/arch/arm/mach-tegra/board-tegratab-power.c	2015-02-07 20:59:18.390111570 -0600
+@@ -621,9 +621,11 @@ int __init tegratab_palmas_regulator_ini
+ 				ARRAY_SIZE(tegratab_palmas_clk32k_idata);
+ 	}
+ 
++#ifdef CONFIG_ANDROID
+ 	if (get_androidboot_mode_charger())
+ 		palmas_pdata.long_press_delay =
+ 				PALMAS_LONG_PRESS_KEY_TIME_12SECONDS;
++#endif
+ 
+ 	i2c_register_board_info(4, palma_device,
+ 			ARRAY_SIZE(palma_device));
+@@ -781,8 +783,12 @@ int __init tegratab_regulator_init(void)
+ int __init tegratab_power_off_init(void)
+ {
+ 	/* Use PMU reset only when battery is exist and not charger mode. */
++#ifdef CONFIG_ANDROID
+ 	if ((get_power_supply_type() == POWER_SUPPLY_TYPE_BATTERY) &&
+		(!get_androidboot_mode_charger()))
++#else
++	if (get_power_supply_type() == POWER_SUPPLY_TYPE_BATTERY)
++#endif
+ 		pm_power_off = palmas_reset;
+ 
+ 	return 0;
+diff -rupN a/security/tf_driver/tf_defs.h b/security/tf_driver/tf_defs.h
+--- a/security/tf_driver/tf_defs.h	2015-01-27 18:42:40.000000000 -0600
++++ b/security/tf_driver/tf_defs.h	2015-02-07 20:45:39.818090956 -0600
+@@ -538,10 +538,6 @@ struct tf_device *tf_get_device(void);
+  * Kernel Differences
+  */
+ 
+-#ifdef CONFIG_ANDROID
+ #define GROUP_INFO		get_current_groups()
+-#else
+-#define GROUP_INFO		(current->group_info)
+-#endif
+ 
+ #endif  /* !defined(__TF_DEFS_H__) */

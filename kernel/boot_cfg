@@ -1,0 +1,8 @@
+bootsize =
+pagesize = 0x800
+kerneladdr = 0x10008000
+ramdiskaddr = 0x11000000
+secondaddr = 0x10f00000
+tagsaddr = 0x10000100
+name = 
+cmdline = console=tty1 loglevel=3 fbcon=vc:1-6
