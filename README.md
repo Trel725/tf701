@@ -1,16 +1,16 @@
 # tf701
 
-Linux for Asus Transformer Pad tf701
+Linux for Asus Transformer Pad tf701 || Author of most stuff: Geometry | Posted by Trel725
 
 For this to be maximally useful to other developers I have constructed the rootfs in a modular and stepwise fashion as descibed in the following. To reproduce, I assume you use a linux system and have installed the packages "qemu-user-static", "abootimg" and "android-tools-fastboot" (that is how the packages are called under Ubuntu). You will build up the rootfs entirely on your linux system. I write <ROOT> for the directory that serves as the file system root.
 
 1. Extract the following files to <ROOT>:
 
 - "ubuntu-core-14.04.2-core-armhf.tar.gz" (http://cdimage.ubuntu.com/ubuntu-core/releases/14.04/release/ubuntu-core-14.04.2-core-armhf.tar.gz) from the Ubuntu core repository. This is a generic minimal rootfs.
-- "kernel-cmaalx-15.tar.gz" from this post. This provides kernel and modules.
+- "kernel-cmaalx-15.tar.gz" from ~/kernel. This provides kernel and modules.
 - "fstab_bind.tar.gz" (in ~/modules) This assures mounting of the Android /system partition
 - "inet-tf701t-trusty.tar.gz" (in ~/modules) This sets a hostname and sets up the ubuntu software repository.
-- "initramfs-bindmount.tar.gz" This enables bind mount for the initramfs, see this post.
+- "initramfs-bindmount.tar.gz" (in ~/modules)  This enables bind mount for the initramfs.
 - "nomod.tar.gz" (in ~/modules) Makes sure that the initramfs does not include extra modules as these would make it too large.
 - "root_media_linuxroot.tar.gz" (in ~/modules) This makes sure the initramfs looks for the rootfs at "/data/media/linuxroot". Change this if you want to put it in a different directory.
 - "init-tf701t.tar.gz" (in ~/modules) Some necessary or useful initialization commands for the tf701t after boot.
@@ -20,22 +20,22 @@ For this to be maximally useful to other developers I have constructed the rootf
 2. Now do:
 Code:
 
-$ cd <ROOT>
-$ sudo mkdir install
-$ sudo mkdir data
-$ sudo ln -s data host
-$ sudo mkdir system
-$ sudo ln -s system/vendor vendor
+> cd <ROOT>
+> sudo mkdir install
+> sudo mkdir data
+> sudo ln -s data host
+> sudo mkdir system
+> sudo ln -s system/vendor vendor
 
 "install" will serve to hold some instalation files. The other directories are for mount points and for the kernel to find wifi and bluetooth firmware.
 
-3. Copy "androcompat.sh.txt" (attached) to <ROOT>/install/ and copy "/usr/bin/qemu-arm-static" to <ROOT>/usr/bin/
+3. Copy "androcompat.sh.txt" (in ~/scripts) to <ROOT>/install/ and copy "/usr/bin/qemu-arm-static" to <ROOT>/usr/bin/
 (Make sure "androcompat.sh.txt" is executable)
 
 4. Enter the rootfs via chroot:
 Code:
 
-$ LC_ALL=C sudo chroot <ROOT> /usr/bin/qemu-arm-static /bin/bash -i
+> LC_ALL=C sudo chroot <ROOT> /usr/bin/qemu-arm-static /bin/bash -i
 
 In the chroot do the following:
 Code:
@@ -64,7 +64,7 @@ xserver-xorg-video-dummy (might not be necessary)
 libgl1-mesa-dri
 
 Copy all these packes to <ROOT>/install/
-Also copy "graphics-setup-tf701t.sh.txt" (attached) to <ROOT>/install/
+Also copy "graphics-setup-tf701t.sh.txt" (in ~/scripts) to <ROOT>/install/
 Make sure this is executable.
 
 6. Now enter a chroot as in step 4. In the chroot:
@@ -106,20 +106,20 @@ The first setp is to clean the package cache so that the rootfs becomes smaller.
 10. For additional clean up remove the files in <ROOT>/install:
 Code:
 
-$ sudo rm -r <ROOT>/install
+> sudo rm -r <ROOT>/install
 
 Now the rootfs in finished and you may wrap it up. For example with tar:
 Code:
 
-$ cd <ROOT>
-$ sudo tar czv --acl --xattrs -f <TARGETFILE.tar.gz> .
+> cd <ROOT>
+> sudo tar czv --acl --xattrs -f <TARGETFILE.tar.gz> .
 
 This you deploy to the tf701t as described at the beginning of the post.
 
 11. It remains to generate the boot image. To this end copy the attached file "boot_cfg.txt" to a directory. Then, copy "initrd.img-3.4.105-cmaalx-15" (the initramfs) and "vmlinuz-3.4.105-cmaalx-15" (the kernel) from <ROOT>/boot/ to this same directory. In this directory create the boot image with the "abootimg" tool:
 Code:
 
-abootimg --create xubuntu-boot.img -f boot_cfg.txt -k vmlinuz-3.4.105-cmaalx-15 -r initrd.img-3.4.105-cmaalx-15
+> abootimg --create xubuntu-boot.img -f boot_cfg.txt -k vmlinuz-3.4.105-cmaalx-15 -r initrd.img-3.4.105-cmaalx-15
 
 Boot as instructed at the beginning of the post.
 
