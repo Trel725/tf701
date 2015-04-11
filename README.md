@@ -4,9 +4,11 @@ Linux for Asus Transformer Pad tf701 || Author of most stuff: Geometry | Posted 
 
 # Installation (for Xubuntu rootfs)
 
-- Download the file http://d-h.st/hNmV
-- create the directory "/data/media/linuxroot" on your device's internal storage
-- extract (as root) the file to this directory
+1) Download the file http://d-h.st/hNmV | updated mirror 
+https://mega.co.nz/#!mo4kHLpB!K3m8FbU0JpRJIHRX5MF1LGPYzXZbjldL_U_nNpQl8Cg
+
+2) create the directory "/data/media/linuxroot" on your device's internal storage
+3) extract (as root) the file to this directory
 
 * $ su
 * $ cd /data/media/root
@@ -37,6 +39,12 @@ You'll not be able to go into recovery, but instead get a complete another OS
 You can get your recovery back just by re-flashing it.
 
 If you've installed rootfs in external storage use linux_ext.img from ~/prebuilt instead of xubuntu-boot.img
+
+Tips:
+
+* Change window theme to default-xhdpi.
+* To enable dock keyboard remapping select "Asus TF300T Dock" in the keyboard settings.
+* To make touchscreen support better (two-finger right button) replace /etc/X11/xorg.conf with updated one from ~/modules/xorg-conf-mtev-tf701t.tar.gz
 
 # Building rootfs
 
@@ -156,6 +164,32 @@ This you deploy to the tf701t as described at the beginning of the post.
  
 
 This procedure should be easily adaptable to other ubuntu flavours, by replacing "xubuntu-desktop" in step 8 with "lubuntu-desktop" for example, also KDE might be worth a try. (standard Ubuntu itself does not work, however, as it needs an up to date xserver.) I hope that many of the provided ingredients could also be useful for other linux distros.
+
+11. Touch support
+
+ Put the following files into a directory <DIR> in the rootfs:
+- xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb.gz from ~/modules. This is the touch screen driver package as it works for the tf300t.
+- "xorg-conf-mtev-tf701t.tar.gz"  (~/modules) This configuration file lets X associate the touch screen with the driver.
+- "touch-wrapper-2.tar.gz" (~/modules) This includes additional libraries, initiates the rm-wrapper program to link Android libraries, and includes a modified Android linker. Without this, the driver does not work for the tf701t.
+
+Assuming you are running the rootfs:
+
+* $ cd <DIR>
+* $ gunzip xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb.gz
+* $ sudo dpkg -i xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb
+* $ cd /
+* $ sudo tar xvf <DIR>/xorg-conf-mtev-tf701t.tar.gz
+* $ sudo tar xvf <DIR>/touch-wrapper-2.tar.gz
+
+Now reboot the rootfs and the touch screen should be working.
+
+If at some point the touch screen should stop working you might try to reenable it by issuing this command.
+Code:
+
+* $ sudo service touch-wrapper restart
+
+
+
 
 # Boot image generation
 
