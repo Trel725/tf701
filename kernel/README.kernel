@@ -1,5 +1,9 @@
-Kernel for Asus tf701
+Kernel for Asus tf701t
 
 Source code: https://github.com/cyanogenmod/android_kernel_asus_tf701t
 
 Patches, config by Geometry
+
+Additional patches (for apparmor):
+https://bazaar.launchpad.net/~ubuntu-branches/ubuntu/trusty/apparmor/trusty/files/head:/kernel-patches/3.4/
+
