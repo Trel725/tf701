@@ -167,8 +167,10 @@ Exit the chroot. In the first step the xorg packaes are installed. Ignore the er
 - "nvgstapps.tbz2" also inside the extracted driver file
 - "restricted_codecs.tbz2" from inside the extracted codecs file
 Also extract:
-- "xorg_conf.tar.gz" (in ~/components) Main configuration file for xorg.
+- "xorg-conf-graphics-tf701t.tar.gz" (in ~/components) Main configuration file for xorg.
+- "xorg-conf-transformer-multitouch.tar.gz" (in ~/components) Xorg configuration for touchpad driver.
 - "xorg-conf-mtev-tf701t.tar.gz" (in ~/components) Xorg configuration for touch screen driver.
+- "xorg-conf-display-size-tf701t.tar.gz" (in ~/components) Make xorg aware of display size for correct dpi.
 - "brightness-fix-tf701t.tar.gz" (in ~/components) This fixes the display brightness issues for lightdm and upon suspend/resume, includes saving and restoring display brightness values.
 - "touch-wrapper-2.tar.gz" (in ~/components) This links Android libraries needed for the touch screen to work.
 - "nvpmxfce.tar.gz" (in ~/components) This fixes display corruption upon resume, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=58148975&postcount=615
