@@ -217,3 +217,17 @@ It remains to generate the boot image. To this end copy the file "bootimg.cfg" f
 
 This procedure should be easily adaptable to other ubuntu flavours, by replacing "xubuntu-desktop" in step 8 with "lubuntu-desktop" for example, also KDE might be worth a try. (standard Ubuntu itself does not work, however, as it needs an up to date xserver.) I hope that many of the provided ingredients could also be useful for other linux distros.
 
+## Using bootloader
+
+First, you need zImage and initrd.img for every system you want to boot. Use abootimg to get it from boot image:
+*  $ abootimg -x boot.img
+
+Create "Boot" dir into /sdcard, aka /data/media/0/. Create subdirectories "android" and "linux". Copy zImage and initrd.img of Ubuntu and Android to appropriate directories. It is two default systems.
+Next, flash multiboot.img from ~/prebuilt into boot partition by command:
+* $ sudo fastboot flash boot multiboot.img
+
+If you want to boot more systems, put zImage and initrd.img of every system into your boot directory (/data/media/0/Boot) and rename it to zImage-X initrd.img-X, where X is any number, e.g. 1. Then use appropriate item into multiboot menu.
+
+More info about kexec-hardboot: http://forum.xda-developers.com/showthread.php?t=2104706
+
+
