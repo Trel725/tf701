@@ -57,7 +57,7 @@ Recommendations:
 
 - xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb from ~/components. This is the touch screen driver package as it works for the tf300t.
 - "xorg-conf-mtev-tf701t.tar.gz"  (~/components) This configuration file lets X associate the touch screen with the driver.
-- "touch-wrapper-2.tar.gz" (~/components) This includes additional libraries, initiates the rm-wrapper program to link Android libraries, and includes a modified Android linker. Without this, the driver does not work for the tf701t.
+- "touch-wrapper-3.tar.gz" (~/components) This includes additional libraries, initiates the rm-wrapper program to link Android libraries, and includes a modified Android linker. Without this, the driver does not work for the tf701t.
 
 Assuming you are running the rootfs:
 
@@ -65,7 +65,7 @@ Assuming you are running the rootfs:
 * $ sudo dpkg -i xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb
 * $ cd /
 * $ sudo tar xvf DIR/xorg-conf-mtev-tf701t.tar.gz
-* $ sudo tar xvf DIR/touch-wrapper-2.tar.gz
+* $ sudo tar xvf DIR/touch-wrapper-3.tar.gz
 
 Now reboot the rootfs and the touch screen should be working.
 
@@ -185,7 +185,7 @@ Also extract:
 - "xorg-conf-mtev-tf701t.tar.gz" (in ~/components) Xorg configuration for touch screen driver.
 - "xorg-conf-display-size-tf701t.tar.gz" (in ~/components) Make xorg aware of display size for correct dpi.
 - "brightness-fix-tf701t.tar.gz" (in ~/components) This fixes the display brightness issues for lightdm and upon suspend/resume, includes saving and restoring display brightness values.
-- "touch-wrapper-2.tar.gz" (in ~/components) This links Android libraries needed for the touch screen to work.
+- "touch-wrapper-3.tar.gz" (in ~/components) This links Android libraries needed for the touch screen to work.
 - "nvpmxfce.tar.gz" (in ~/components) This fixes display corruption upon resume, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=58148975&postcount=615
 - "tf300t-dock-trusty.tar.gz" (in ~/components) Provides improved keyboard mapping scheme, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=60032762&postcount=137
 
