@@ -18,15 +18,15 @@ https://mega.co.nz/#!mo4kHLpB!K3m8FbU0JpRJIHRX5MF1LGPYzXZbjldL_U_nNpQl8Cg
 * $ tar -xf {path to tf701t-xubuntu-14.04-rootfs.tar.gz}
 
 
-As well as installing to internal storage, you can install rootfs on SDcard just by unpacking it to SD, formatted in ext* file system. In that case, edit the file "/etc/fstab" in the rootfs, uncommenting the line that starts with "/dev/mmcblk0p14".
+As well as installing to internal storage, you can install the rootfs on an SDcard just by unpacking it to SD, formatted in ext4 file system. In that case, edit the file "/etc/fstab" in the rootfs, uncommenting the line that starts with "/dev/mmcblk0p14".
 
 
 ## Booting
 
-Download the "xubuntu-boot.img" file from ~/prebuilt or build it yourself.
+Download the "boot-media-linuxroot-15.img" file from ~/prebuilt or build it yourself.
 Go to the bootloader on your tabet (power + volume down). From your PC boot the tf701t via fastboot: (assuming you run linux)
 
-* $ sudo fastboot boot xubuntu-boot.img
+* $ sudo fastboot boot boot-media-linuxroot-15.img
 
 The standard user is called "ubuntu" with real name "Test User" and password "ubuntu".
 
@@ -39,7 +39,7 @@ If you like linux and want to install it permanently, you can flash xubuntu-boot
 You will not be able to go into recovery, but instead get a completely different OS.
 You can get your recovery back just by re-flashing it.
 
-If you've installed rootfs in external storage use linux_ext.img from ~/prebuilt instead of xubuntu-boot.img
+If you've installed the rootfs in the first partition of an SD card inserted into the keyboard dock slot use boot-sda1-15.img from ~/prebuilt instead of boot-media-linuxroot-15.img
 
 Recommendations:
 
@@ -48,6 +48,7 @@ Recommendations:
 * Turn on battery status icons in power settings.
 * If the lid is closed and opened again the screen might be blank. Simply bring it back to life by pressings the "increase brightness" button.
 * Change window theme to default-xhdpi. [To do: describe installation of this theme.]
+
 
 
 ## Adding touch screen support to the pre-built rootfs
@@ -78,9 +79,19 @@ If at some point the touch screen should stop working you might try to reenable 
 Extract the file "tf300t-dock-trusty.tar.gz" (in ~/components) to the rootfs and reboot. To enable this imporved dock keyboard remapping select "Asus TF300T Dock" in the keyboard settings.
 
 
+## Kernel
+
+The image comes with the kernel version 3.4.105-cmaalx-15 installed, see ~/kernel. If you want to use kernel version 3.4.107-cmaalxhb-17 instead (that includes kexec hardboot support and is slightly more recent) just extract the file "kernel-cmaalxhb-17.tar.gz" to the rootfs and boot with the images ending in \*-17.img from ~/prebuilt. Also you will need to copy or link the following firmware files from Android to /lib/firmware of the rootfs for wifi to work:
+
+* /data/misc/wifi/nvram.txt
+* /system/vendor/firmware/bcm43341/fw_bcmdhd.bin
+
+You may then delete the dirctory /lib/modules/3.4.105-cmaalx-15 to save space.
+
+
 ## Arch Linux
 
-As well as installing Xubuntu, you can install Arch. It is not so friendly and some some things working worse. Installation is same, but you should download arch rootfs: https://mega.co.nz/#!b8w3VJaJ!SpD1GTIkNiiAmYiCUxmhOYjX6NYN8IeFPhiY6N9Xtkc, directory for installing should has "archlinux" and you should use arch_bind.img instead of xubuntu-boot.img. If you like booting from SDcard, you can use same linux_ext.img
+As well as installing Xubuntu, you can install Arch. It is not so friendly and some some things working worse. Installation is same, but you should download arch rootfs: https://mega.co.nz/#!b8w3VJaJ!SpD1GTIkNiiAmYiCUxmhOYjX6NYN8IeFPhiY6N9Xtkc, directory for installing should be "/data/media/archlinux" and you should use boot-media-archlinux-15.img instead of boot-media-linuxroot-15.img. If you like booting from SDcard, you can use same boot-sda1-15.img
 
 
 # Building the Xubuntu rootfs from scratch
@@ -91,7 +102,7 @@ The rootfs is constructed in a modular and stepwise fashion as descibed in the f
 1.) Extract the following files to ROOT:
 
 - "ubuntu-core-14.04.2-core-armhf.tar.gz" (http://cdimage.ubuntu.com/ubuntu-core/releases/14.04/release/ubuntu-core-14.04.2-core-armhf.tar.gz) from the Ubuntu core repository. This is a generic minimal rootfs.
-- "kernel-cmaalx-15.tar.gz" from ~/kernel. This provides kernel and modules.
+- "kernel-cmaalxhb-17.tar.gz" from ~/kernel. This provides kernel and modules.
 - "fstab_bind.tar.gz" (in ~/components) This assures mounting of the Android /system partition
 - "inet-tf701t-trusty.tar.gz" (in ~/components) This sets a hostname and sets up the ubuntu software repository.
 - "initramfs-bindmount.tar.gz" (in ~/components)  This enables bind mount for the initramfs.
@@ -109,9 +120,11 @@ The rootfs is constructed in a modular and stepwise fashion as descibed in the f
 *  $ sudo mkdir data
 *  $ sudo ln -s data host
 *  $ sudo mkdir system
-*  $ sudo ln -s system/vendor vendor
+*  $ sudo ln -s data/misc/wifi/nvram.txt lib/firmware/
+*  $ sudo ln -s system/vendor/firmware/bcm43341/fw_bcmdhd.bin lib/firmware/
 
-"install" will serve to hold some instalation files. The other directories are for mount points and for the kernel to find wifi and bluetooth firmware.
+
+"install" will serve to hold some instalation files. The other directories are for mount points and for the kernel to find the wifi firmware. You may later replace the symbolic links for the firmware by actual copies of the files.
 
 3.) Copy "androcompat.sh" (in ~/scripts) to ROOT/install/ and copy "/usr/bin/qemu-arm-static" to ROOT/usr/bin/
 (Make sure "androcompat.sh" is executable)
@@ -190,7 +203,7 @@ And exit. The first step sets up some nvidia graphics libraries. The second step
 
 
 *  \# apt-get clean
-*  \# update-initramfs -c -k 3.4.105-cmaalx-15
+*  \# update-initramfs -c -k 3.4.107-cmaalxhb-17
 
 The first setp is to clean the package cache so that the rootfs becomes smaller. The second step generates the initramfs.
 
@@ -210,14 +223,15 @@ This you deploy to the tf701t as described at the beginning of the post.
 
 11.) Boot image generation
 
-It remains to generate the boot image. To this end copy the file "bootimg.cfg" from ~/kernel to a directory. Then, copy "initrd.img-3.4.105-cmaalx-15" (the initramfs) and "vmlinuz-3.4.105-cmaalx-15" (the kernel) from ROOT/boot/ to this same directory. In this directory create the boot image with the "abootimg" tool:
+It remains to generate the boot image. To this end copy the file "bootimg.cfg" from ~/kernel to a directory. Then, copy "initrd.img-3.4.107-cmaalxhb-17" (the initramfs) and "vmlinuz-3.4.107-cmaalxhb-17" (the kernel) from ROOT/boot/ to this same directory. In this directory create the boot image with the "abootimg" tool:
 
-*  $ abootimg --create xubuntu-boot.img -f bootimg.cfg -k vmlinuz-3.4.105-cmaalx-15 -r initrd.img-3.4.105-cmaalx-15
+*  $ abootimg --create boot-media-linuxroot-17.img -f bootimg.cfg -k vmlinuz-3.4.107-cmaalx-17 -r initrd.img-3.4.107-cmaalx-17
 
 
 This procedure should be easily adaptable to other ubuntu flavours, by replacing "xubuntu-desktop" in step 8 with "lubuntu-desktop" for example, also KDE might be worth a try. (standard Ubuntu itself does not work, however, as it needs an up to date xserver.) I hope that many of the provided ingredients could also be useful for other linux distros.
 
-## Using bootloader
+
+# Using kexec bootloader
 
 First, you need zImage and initrd.img for every system you want to boot. Use abootimg to get it from boot image:
 *  $ abootimg -x boot.img
