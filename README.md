@@ -106,7 +106,7 @@ The rootfs is constructed in a modular and stepwise fashion as descibed in the f
 - "fstab_bind.tar.gz" (in ~/components) This assures mounting of the Android /system partition
 - "inet-tf701t-trusty.tar.gz" (in ~/components) This sets a hostname and sets up the ubuntu software repository.
 - "initramfs-bindmount.tar.gz" (in ~/components)  This enables bind mount for the initramfs.
-- "nomod.tar.gz" (in ~/components) Makes sure that the initramfs does not include extra modules as these would make it too large.
+- "initramfs-no-modules.tar.gz" (in ~/components) Makes sure that the initramfs does not include extra modules as these would make it too large.
 - "root_media_linuxroot.tar.gz" (in ~/components) This makes sure the initramfs looks for the rootfs at "/data/media/linuxroot". Change this if you want to put it in a different directory.
 - "init-tf701t.tar.gz" (in ~/components) Some necessary or useful initialization commands for the tf701t after boot.
 - "bluetooth-tf701t.tar.gz" (in ~/components) This makes bluetooth work. It works similarly as done previously for the tf300t.
