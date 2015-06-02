@@ -24,7 +24,7 @@ As well as installing to internal storage, you can install the rootfs on an SDca
 ## Booting
 
 Download the "boot-media-linuxroot-15.img" file from ~/prebuilt or build it yourself.
-Go to the bootloader on your tabet (power + volume down). From your PC boot the tf701t via fastboot: (assuming you run linux)
+Go to the bootloader on your tablet (power + volume down). From your PC boot the tf701t via fastboot: (assuming you run linux)
 
 * $ sudo fastboot boot boot-media-linuxroot-15.img
 
@@ -53,7 +53,7 @@ Recommendations:
 
 ## Adding touch screen support to the pre-built rootfs
 
- Put the following files into a directory DIR in the rootfs:
+Put the following files into a directory DIR in the rootfs:
 
 - xserver-xorg-input-mtev_0.1.13ubuntu2_armhf.deb from ~/components. This is the touch screen driver package as it works for the tf300t.
 - "xorg-conf-mtev-tf701t.tar.gz"  (~/components) This configuration file lets X associate the touch screen with the driver.
@@ -76,7 +76,12 @@ If at some point the touch screen should stop working you might try to reenable 
 
 ## Improved keyboard mapping
 
-Extract the file "tf300t-dock-trusty.tar.gz" (in ~/components) to the rootfs and reboot. To enable this imporved dock keyboard remapping select "Asus TF300T Dock" in the keyboard settings.
+Extract the file "tf300t-dock-trusty.tar.gz" (in ~/components) to the rootfs and reboot. To enable this improved dock keyboard remapping select "Asus TF300T Dock" in the keyboard settings.
+
+
+## Graphics corruption issues
+
+Waking up from suspend cases a graphics corruption issue with xfwm4, the xfce4 window manager. As a fix for this, a small program that restores xfwm4 upon wake up is already included in the rootfs. So you should not notice anything. However, the same issue can occur in other contexts, especially when connecting to an external display via HDMI. It is therefore convenient to be able to invoke this program as a stand alone when needed. Extract the file ~/components/nvpmxfce-2.tar.gz to the rootfs. This makes available the program "/usr/bin/xfwm_restore". Call this program when the corruption issue occurs. It is convenient to define for this a key combination in "Settings" -> "Keyboard" -> "Application Shortcuts".
 
 
 ## Kernel
@@ -86,7 +91,7 @@ The image comes with the kernel version 3.4.105-cmaalx-15 installed, see ~/kerne
 * /data/misc/wifi/nvram.txt
 * /system/vendor/firmware/bcm43341/fw_bcmdhd.bin
 
-You may then delete the dirctory /lib/modules/3.4.105-cmaalx-15 to save space.
+You may then delete the directory /lib/modules/3.4.105-cmaalx-15 to save space.
 
 
 ## Arch Linux
@@ -97,7 +102,7 @@ As well as installing Xubuntu, you can install Arch. It is not so friendly and s
 # Building the Xubuntu rootfs from scratch
 
 (These instructions yield a rootfs that already includes touch support and improved keyboard mapping.)
-The rootfs is constructed in a modular and stepwise fashion as descibed in the following. To reproduce, I assume you use a linux system and have installed the packages "qemu-user-static", "abootimg" and "android-tools-fastboot" (that is how the packages are called under Ubuntu). You will build up the rootfs entirely on your linux system. I write ROOT for the directory that serves as the file system root.
+The rootfs is constructed in a modular and step-wise fashion as described in the following. To reproduce, I assume you use a linux system and have installed the packages "qemu-user-static", "abootimg" and "android-tools-fastboot" (that is how the packages are called under Ubuntu). You will build up the rootfs entirely on your linux system. I write ROOT for the directory that serves as the file system root.
 
 1.) Extract the following files to ROOT:
 
@@ -186,7 +191,7 @@ Also extract:
 - "xorg-conf-display-size-tf701t.tar.gz" (in ~/components) Make xorg aware of display size for correct dpi.
 - "brightness-fix-tf701t.tar.gz" (in ~/components) This fixes the display brightness issues for lightdm and upon suspend/resume, includes saving and restoring display brightness values.
 - "touch-wrapper-3.tar.gz" (in ~/components) This links Android libraries needed for the touch screen to work.
-- "nvpmxfce.tar.gz" (in ~/components) This fixes display corruption upon resume, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=58148975&postcount=615
+- "nvpmxfce-2.tar.gz" (in ~/components) This fixes display corruption upon resume, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=58148975&postcount=615
 - "tf300t-dock-trusty.tar.gz" (in ~/components) Provides improved keyboard mapping scheme, as for the tf300t, see: http://forum.xda-developers.com/showpost.php?p=60032762&postcount=137
 
 
