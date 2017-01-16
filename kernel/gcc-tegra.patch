@@ -1,0 +1,14 @@
+https://devtalk.nvidia.com/default/topic/914941/jetson-tx1/custom-kernel-compilations/2
+
+diff -rupN a/arch/arm/mach-tegra/tegra11_clocks.c b/arch/arm/mach-tegra/tegra11_clocks.c
+--- a/arch/arm/mach-tegra/tegra11_clocks.c	2016-10-29 05:35:44.000000000 -0500
++++ b/arch/arm/mach-tegra/tegra11_clocks.c	2016-12-13 10:38:03.513874000 -0600
+@@ -1007,7 +1007,7 @@ static struct clk_ops tegra_super_ops =
+  */
+ static void tegra11_cpu_clk_init(struct clk *c)
+ {
+-	c->state = (!is_lp_cluster() == (c->u.cpu.mode == MODE_G))? ON : OFF;
++  c->state = ((!is_lp_cluster()) == (c->u.cpu.mode == MODE_G))? ON : OFF;
+ }
+ 
+ static int tegra11_cpu_clk_enable(struct clk *c)

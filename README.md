@@ -32,9 +32,9 @@ The standard user is called "ubuntu" with real name "Test User" and password "ub
 
 It won't destroy any data. When you reboot, you'll get the same android system without any changes.
 
-If you like linux and want to install it permanently, you can flash xubuntu-boot.img instead of recovery using this command:
+If you like linux and want to install it permanently, you can flash boot-media-linuxroot-15.img instead of recovery using this command:
 
-* $ sudo fastboot flash recovery xubuntu-boot.img
+* $ sudo fastboot flash recovery boot-media-linuxroot-15.img
 
 You will not be able to go into recovery, but instead get a completely different OS.
 You can get your recovery back just by re-flashing it.
@@ -86,12 +86,12 @@ Waking up from suspend cases a graphics corruption issue with xfwm4, the xfce4 w
 
 ## Kernel
 
-The image comes with the kernel version 3.4.105-cmaalx-15 installed, see ~/kernel. If you want to use kernel version 3.4.107-cmaalxhb-17 instead (that includes kexec hardboot support and is slightly more recent) just extract the file "kernel-cmaalxhb-17.tar.gz" to the rootfs and boot with the images ending in \*-17.img from ~/prebuilt. Also you will need to copy or link the following firmware files from Android to /lib/firmware of the rootfs for wifi to work:
+The image comes with the kernel version 3.4.105-cmaalx-15 installed, see ~/kernel. It is recommended to use the more recent kernel version 3.4.113-cmaalxhb-12 instead. It has kexec-hardboot support, is more secure and comes with the BFQ I/O scheduler that should improve I/O latency. Just extract the file "kernel-3.4.113-cmaalxhb-22.tar.xz" to the rootfs and boot with the images ending in \*-22.img from ~/prebuilt. Also you will need to copy or link the following firmware files from Android to /lib/firmware of the rootfs for wifi to work:
 
 * /data/misc/wifi/nvram.txt
 * /system/vendor/firmware/bcm43341/fw_bcmdhd.bin
 
-You may then delete the directory /lib/modules/3.4.105-cmaalx-15 to save space.
+You may then delete the directory /lib/modules/3.4.105-cmaalx-15 and its contents to save space.
 
 
 ## Arch Linux
@@ -106,8 +106,8 @@ The rootfs is constructed in a modular and step-wise fashion as described in the
 
 1.) Extract the following files to ROOT:
 
-- "ubuntu-core-14.04.2-core-armhf.tar.gz" (http://cdimage.ubuntu.com/ubuntu-core/releases/14.04/release/ubuntu-core-14.04.2-core-armhf.tar.gz) from the Ubuntu core repository. This is a generic minimal rootfs.
-- "kernel-cmaalxhb-17.tar.gz" from ~/kernel. This provides kernel and modules.
+- "ubuntu-core-14.04.2-core-armhf.tar.gz" (http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.5-base-armhf.tar.gz) from the Ubuntu core repository. This is a generic minimal rootfs.
+- "kernel-3.4.113-cmaalxhb-22.tar.xz" from ~/kernel. This provides kernel and modules.
 - "fstab_bind.tar.gz" (in ~/components) This assures mounting of the Android /system partition
 - "inet-tf701t-trusty.tar.gz" (in ~/components) This sets a hostname and sets up the ubuntu software repository.
 - "initramfs-bindmount.tar.gz" (in ~/components)  This enables bind mount for the initramfs.
@@ -208,7 +208,7 @@ And exit. The first step sets up some nvidia graphics libraries. The second step
 
 
 *  \# apt-get clean
-*  \# update-initramfs -c -k 3.4.107-cmaalxhb-17
+*  \# update-initramfs -c -k 3.4.113-cmaalxhb-22
 
 The first setp is to clean the package cache so that the rootfs becomes smaller. The second step generates the initramfs.
 
@@ -228,9 +228,9 @@ This you deploy to the tf701t as described at the beginning of the post.
 
 11.) Boot image generation
 
-It remains to generate the boot image. To this end copy the file "bootimg.cfg" from ~/kernel to a directory. Then, copy "initrd.img-3.4.107-cmaalxhb-17" (the initramfs) and "vmlinuz-3.4.107-cmaalxhb-17" (the kernel) from ROOT/boot/ to this same directory. In this directory create the boot image with the "abootimg" tool:
+It remains to generate the boot image. To this end copy the file "bootimg.cfg" from ~/kernel to a directory. Then, copy "initrd.img-3.4.113-cmaalxhb-22" (the initramfs) and "vmlinuz-3.4.113-cmaalxhb-22" (the kernel) from ROOT/boot/ to this same directory. In this directory create the boot image with the "abootimg" tool:
 
-*  $ abootimg --create boot-media-linuxroot-17.img -f bootimg.cfg -k vmlinuz-3.4.107-cmaalx-17 -r initrd.img-3.4.107-cmaalx-17
+*  $ abootimg --create boot-media-linuxroot-22.img -f bootimg.cfg -k vmlinuz-3.4.113-cmaalxhb-22 -r initrd.img-3.4.113-cmaalxhb-22
 
 
 This procedure should be easily adaptable to other ubuntu flavours, by replacing "xubuntu-desktop" in step 8 with "lubuntu-desktop" for example, also KDE might be worth a try. (standard Ubuntu itself does not work, however, as it needs an up to date xserver.) I hope that many of the provided ingredients could also be useful for other linux distros.
